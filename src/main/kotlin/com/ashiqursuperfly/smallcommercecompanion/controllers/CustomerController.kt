@@ -1,7 +1,7 @@
 package com.ashiqursuperfly.smallcommercecompanion.controllers
 
+import com.ashiqursuperfly.smallcommercecompanion.base.SimpleCrudController
 import com.ashiqursuperfly.smallcommercecompanion.models.Customer
-import com.ashiqursuperfly.smallcommercecompanion.models.ResponseModel
 import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.ResponseEntity

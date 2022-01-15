@@ -1,4 +1,4 @@
-package com.ashiqursuperfly.smallcommercecompanion.models
+package com.ashiqursuperfly.smallcommercecompanion.base
 
 interface SimpleBaseModel<T> {
     fun update(data: T): T

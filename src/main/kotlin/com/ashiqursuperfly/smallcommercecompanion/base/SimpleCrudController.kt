@@ -1,7 +1,6 @@
-package com.ashiqursuperfly.smallcommercecompanion.controllers
+package com.ashiqursuperfly.smallcommercecompanion.base
 
-import com.ashiqursuperfly.smallcommercecompanion.models.ResponseModel
-import com.ashiqursuperfly.smallcommercecompanion.models.SimpleBaseModel
+import com.ashiqursuperfly.smallcommercecompanion.controllers.ResponseModel
 import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
