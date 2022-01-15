@@ -6,7 +6,6 @@ import org.springframework.data.mongodb.core.mapping.Field
 
 @Document(collection=Const.MongoCollections.BUSINESSES)
 data class Business(
-
     @Id
     val id: String, // TODO: Auto Increment
     @Field
