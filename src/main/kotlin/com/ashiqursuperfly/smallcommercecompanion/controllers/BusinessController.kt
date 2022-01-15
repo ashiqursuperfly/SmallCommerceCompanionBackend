@@ -11,14 +11,19 @@ import org.springframework.web.bind.annotation.*
 class BusinessController: SimpleCrudController<Business, BusinessRepository>() {
 
     @Autowired
-    private lateinit var businessRepository: BusinessRepository
+    lateinit var customerRepository: BusinessRepository
+
+    override fun getRepository(): BusinessRepository {
+        return customerRepository
+    }
+
 
     @GetMapping("/businesses/{id}")
     override fun get(@PathVariable id: String): ResponseEntity<ResponseModel<Business?>> {
         return super.get(id)
     }
 
-    @GetMapping("/businesses")
+    @PostMapping("/businesses")
     override fun post(@RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         return super.post(data)
     }

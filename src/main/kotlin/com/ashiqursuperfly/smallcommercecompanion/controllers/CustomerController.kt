@@ -4,7 +4,6 @@ import com.ashiqursuperfly.smallcommercecompanion.models.Customer
 import com.ashiqursuperfly.smallcommercecompanion.models.ResponseModel
 import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -13,14 +12,19 @@ import org.springframework.web.bind.annotation.*
 class CustomerController: SimpleCrudController<Customer, CustomerRepository>() {
 
     @Autowired
-    private lateinit var customerRepository: CustomerRepository
+    lateinit var customerRepository: CustomerRepository
+
+    override fun getRepository(): CustomerRepository {
+        return customerRepository
+    }
+
 
     @GetMapping("/customers/{id}")
     override fun get(@PathVariable id: String): ResponseEntity<ResponseModel<Customer?>> {
        return super.get(id)
     }
 
-    @GetMapping("/customers")
+    @PostMapping("/customers")
     override fun post(@RequestBody data: Customer): ResponseEntity<ResponseModel<Customer?>> {
         return super.post(data)
     }

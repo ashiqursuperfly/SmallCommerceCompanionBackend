@@ -8,26 +8,26 @@ import org.springframework.http.ResponseEntity
 
 abstract class SimpleCrudController<MODEL: SimpleBaseModel<MODEL>, REPOSITORY : MongoRepository<MODEL, String>>{
 
-    private lateinit var repository: REPOSITORY
+    abstract fun getRepository(): REPOSITORY
 
     open fun get(id: String): ResponseEntity<ResponseModel<MODEL?>> {
-        val res = repository.findById(id)
+        val res = getRepository().findById(id)
         return if (res.isPresent) {
             ResponseModel<MODEL?>(res.get()).build(HttpStatus.OK)
         }
-        else ResponseModel<MODEL?>(data=null, detail="Invalid Model ID: $id").build(HttpStatus.FORBIDDEN)
+        else ResponseModel<MODEL?>(data=null, message="Invalid Model ID: $id").build(HttpStatus.FORBIDDEN)
     }
     
     open fun post(data: MODEL): ResponseEntity<ResponseModel<MODEL?>> {
-        val saved = repository.save(data)
+        val saved = getRepository().save(data)
         return ResponseModel<MODEL?>(saved).build(HttpStatus.OK)
     }
     
     open fun put(id: String, data: MODEL): ResponseEntity<ResponseModel<MODEL?>> {
-        val res = repository.findById(id)
+        val res = getRepository().findById(id)
         return if (res.isPresent) {
             ResponseModel<MODEL?>(res.get().update(data)).build(HttpStatus.OK)
         }
-        else ResponseModel<MODEL?>(data=null, detail="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
+        else ResponseModel<MODEL?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
     }
 }

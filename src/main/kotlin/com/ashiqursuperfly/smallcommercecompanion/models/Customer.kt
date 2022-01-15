@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field
 @Document(collection = Const.MongoCollections.CUSTOMERS)
 data class Customer(
     @Id
-    val id: String,
+    val id: String, // TODO: Auto Increment
     @Field
     var name: String?,
     @Field

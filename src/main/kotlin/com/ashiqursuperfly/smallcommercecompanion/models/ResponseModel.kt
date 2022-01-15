@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity
 
 data class ResponseModel<T>(
     val data: T,
-    val detail: String = "Success",
+    val message: String = "Success",
 ) {
     fun build(status: HttpStatus): ResponseEntity<ResponseModel<T>>{
         return ResponseEntity<ResponseModel<T>>(this, status)

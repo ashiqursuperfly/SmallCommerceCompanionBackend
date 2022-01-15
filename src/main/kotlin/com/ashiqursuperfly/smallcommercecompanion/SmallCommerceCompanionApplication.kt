@@ -17,7 +17,7 @@ class SmallCommerceCompanionApplication {
             val beanNames = ctx.beanDefinitionNames
             Arrays.sort(beanNames)
             for (beanName in beanNames) {
-                println(beanName)
+                println("BEAN: $beanName")
             }
         }
     }

@@ -6,28 +6,49 @@ import org.springframework.data.mongodb.core.mapping.Field
 
 @Document(collection=Const.MongoCollections.BUSINESSES)
 data class Business(
+
     @Id
-    val id: String,
+    val id: String, // TODO: Auto Increment
     @Field
-    val name: String?,
+    var name: String?,
     @Field
-    val password: String?,
+    var password: String?,
     @Field
-    val phoneNumber: String?,
+    var phoneNumber: String?,
     @Field
-    val email: String?,
+    var email: String?,
     @Field
-    val facebookPageLink: String?,
+    var facebookPageLink: String?,
     @Field
-    val instagramPageLink: String?,
+    var instagramPageLink: String?,
     @Field
-    val youtubePageLink: String?,
+    var youtubePageLink: String?,
     @Field
-    val about: String?
+    var about: String?
 ) : SimpleBaseModel<Business> {
 
     override fun update(data: Business): Business {
-        //TODO:
+        data.name?.let {
+            this.name = it
+        }
+        data.phoneNumber?.let {
+            this.phoneNumber = it
+        }
+        data.email?.let {
+            this.email = it
+        }
+        data.facebookPageLink?.let {
+            this.facebookPageLink = it
+        }
+        data.instagramPageLink?.let {
+            this.instagramPageLink = it
+        }
+        data.youtubePageLink?.let {
+            this.youtubePageLink = it
+        }
+        data.about?.let {
+            this.about = it
+        }
         return this
     }
 
