@@ -21,7 +21,7 @@ data class Customer(
     @Field
     var instagramProfileLink: String?,
     @DBRef
-    val business: Business?
+    var business: Business?
 ) : SimpleBaseModel<Customer> {
 
     override fun update(data: Customer): Customer {
@@ -41,5 +41,17 @@ data class Customer(
             this.instagramProfileLink = it
         }
         return this
+    }
+
+    fun customCopy(): Customer {
+        return Customer(
+            id=id,
+            name=name,
+            phoneNumber=phoneNumber,
+            email=email,
+            facebookProfileLink=facebookProfileLink,
+            instagramProfileLink=instagramProfileLink,
+            business=null
+        )
     }
 }
