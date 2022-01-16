@@ -30,5 +30,5 @@ abstract class SimpleCrudController<MODEL: SimpleBaseModel<MODEL>, REPOSITORY : 
         else ResponseModel<MODEL?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
     }
 
-    //TODO
+    //TODO: delete
 }
