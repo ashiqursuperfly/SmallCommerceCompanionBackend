@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
+@RequestMapping("api/v1/business")
 class BusinessController: SimpleCrudController<Long, Business, BusinessRepository>() {
 
     @Autowired
@@ -26,12 +27,12 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
         return businessRepository
     }
 
-    @GetMapping("/business/{id}")
+    @GetMapping("/{id}")
     override fun get(@PathVariable id: Long): ResponseEntity<ResponseModel<Business?>> {
         return super.get(id)
     }
 
-    @PostMapping("/business")
+    @PostMapping
     override fun post(@RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         val copied = data.copy(
             id=sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.BUSINESS_SEQUENCE)
@@ -40,7 +41,7 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
         return super.post(copied)
     }
 
-    @PutMapping("/business/{id}")
+    @PutMapping("/{id}")
     fun put(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long, @RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         val res = getRepository().findById(id)
         if (res.isPresent) {

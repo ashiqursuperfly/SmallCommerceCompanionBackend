@@ -34,7 +34,7 @@ class ProductController: SimpleCrudController<Long, Product, ProductRepository>(
         if (business.isEmpty) {
             return ResponseModel<Product?>(data=null, message="Invalid Business ID: $businessID").build(HttpStatus.FORBIDDEN)
         }
-        val copied = data.copy(business = business.get())
+        val copied = data.copy(businessId = business.get().id)
         return super.post(copied)
     }
 
