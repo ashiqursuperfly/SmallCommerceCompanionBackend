@@ -9,7 +9,6 @@ data class Customer(
     @Id
     var id: Long,
     var name: String?,
-
     var phoneNumber: String?,
     var email: String?,
     var facebookProfileLink: String?,
