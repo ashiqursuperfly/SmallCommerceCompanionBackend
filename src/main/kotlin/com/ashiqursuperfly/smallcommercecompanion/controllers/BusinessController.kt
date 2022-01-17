@@ -5,6 +5,8 @@ import com.ashiqursuperfly.smallcommercecompanion.base.SimpleCrudController
 import com.ashiqursuperfly.smallcommercecompanion.models.Business
 import com.ashiqursuperfly.smallcommercecompanion.models.Const
 import com.ashiqursuperfly.smallcommercecompanion.repositories.BusinessRepository
+import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
+import com.ashiqursuperfly.smallcommercecompanion.repositories.ProductRepository
 import com.ashiqursuperfly.smallcommercecompanion.services.SequenceGeneratorService
 import com.ashiqursuperfly.smallcommercecompanion.utils.Utils
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,7 +25,13 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
     @Autowired
     lateinit var businessRepository: BusinessRepository
 
-    override fun getRepository(): BusinessRepository {
+    @Autowired
+    lateinit var customerRepository: CustomerRepository
+
+    @Autowired
+    lateinit var productRepository: ProductRepository
+
+    override fun getCrudRepository(): BusinessRepository {
         return businessRepository
     }
 
@@ -43,7 +51,7 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
 
     @PutMapping("/{id}")
     fun put(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long, @RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
-        val res = getRepository().findById(id)
+        val res = getCrudRepository().findById(id)
         if (res.isPresent) {
             return if (res.get().secretAccessKey == secretAccessKey) {
                 super.post(res.get().update(data))
@@ -52,4 +60,19 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
         return ResponseModel<Business?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
     }
 
+    @DeleteMapping("/{id}")
+    fun delete(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long): ResponseEntity<ResponseModel<Business?>> {
+
+        //TODO: should delete all objects having this business id in customer, product & order collection
+
+        val res = getCrudRepository().findById(id)
+        if (res.isPresent) {
+            return if (res.get().secretAccessKey == secretAccessKey) {
+                getCrudRepository().deleteById(id)
+                customerRepository.deleteAll(customerRepository.findAllCustomersOfThisBusiness(id))
+                ResponseModel<Business?>(data=null, message="Deletion Successful").build(HttpStatus.OK)
+            } else ResponseModel<Business?>(data=null, message="Invalid/Missing business secret access key").build(HttpStatus.FORBIDDEN)
+        }
+        return ResponseModel<Business?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
+    }
 }

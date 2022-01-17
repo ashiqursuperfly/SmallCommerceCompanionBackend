@@ -18,3 +18,12 @@ Thus it will register them in Spring's Application Context, and allow us to inje
 ##### Using @Autowired
 - After enabling annotation injection, we can use autowiring on properties, setters, and constructors.
 
+#### Mongo Query Guide
+```
+@Query("{'author' : ?0, 'category' : ?1}")
+List<Book> findPositionalParameters(String author, String category);
+
+@Query("{'author' : :#{#author}, 'category' : :#{#category}}")
+List<Book> findNamedParameters(@Param("author") String author, @Param("category") String category);
+```
+In the first approach, the first positional argument, ?0, corresponds to the first argument in the method, and the value of the argument will be used instead of ?0. This means that you have to keep track of the positions and not mix them up, otherwise, MongoDB will silently fail and just won't return the results, given the schema-flexibility, since you might as well have that property.

@@ -19,7 +19,7 @@ class ProductController: SimpleCrudController<Long, Product, ProductRepository>(
     @Autowired
     lateinit var businessRepository: BusinessRepository
 
-    override fun getRepository(): ProductRepository {
+    override fun getCrudRepository(): ProductRepository {
         return productRepository
     }
 

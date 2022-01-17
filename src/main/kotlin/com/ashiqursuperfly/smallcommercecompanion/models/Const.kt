@@ -15,5 +15,9 @@ object Const {
             const val CUSTOMER_SEQUENCE = "customer_sequence"
             const val PRODUCT_SEQUENCE = "product_sequence"
         }
+        object Params {
+            const val SECRET_ACCESS_KEY = "secretAccessKey"
+            const val BUSINESS_ID = "businessId"
+        }
     }
 }
