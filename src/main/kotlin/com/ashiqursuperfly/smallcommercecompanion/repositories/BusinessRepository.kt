@@ -5,5 +5,5 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface BusinessRepository: MongoRepository<Business, String> {
+interface BusinessRepository: MongoRepository<Business, Long> {
 }

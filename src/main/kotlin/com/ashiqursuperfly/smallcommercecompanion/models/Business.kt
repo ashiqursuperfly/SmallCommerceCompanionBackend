@@ -2,28 +2,25 @@ package com.ashiqursuperfly.smallcommercecompanion.models
 
 import com.ashiqursuperfly.smallcommercecompanion.base.SimpleBaseModel
 import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.index.Indexed
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection=Const.MongoCollections.BUSINESSES)
+@Document(collection=Const.Mongo.Collections.BUSINESSES)
 data class Business(
     @Id
-    val id: String, // TODO: Auto Increment
-    @Field
+    var id: Long,
+
+    @Indexed(unique = true)
     var name: String?,
-    @Field
-    var password: String?,
-    @Field
+    @Indexed(unique = true)
+    var secretAccessKey: String?,
+
     var phoneNumber: String?,
-    @Field
     var email: String?,
-    @Field
+
     var facebookPageLink: String?,
-    @Field
     var instagramPageLink: String?,
-    @Field
     var youtubePageLink: String?,
-    @Field
     var about: String?
 ) : SimpleBaseModel<Business> {
 

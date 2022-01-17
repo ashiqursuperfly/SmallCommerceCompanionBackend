@@ -1,5 +1,6 @@
 package com.ashiqursuperfly.smallcommercecompanion.controllers
 
+import com.ashiqursuperfly.smallcommercecompanion.base.ResponseModel
 import com.ashiqursuperfly.smallcommercecompanion.base.SimpleCrudController
 import com.ashiqursuperfly.smallcommercecompanion.models.Customer
 import com.ashiqursuperfly.smallcommercecompanion.repositories.BusinessRepository
@@ -11,7 +12,7 @@ import org.springframework.web.bind.annotation.*
 
 
 @RestController
-class CustomerController: SimpleCrudController<Customer, CustomerRepository>() {
+class CustomerController: SimpleCrudController<Long, Customer, CustomerRepository>() {
 
     @Autowired
     lateinit var customerRepository: CustomerRepository
@@ -23,28 +24,28 @@ class CustomerController: SimpleCrudController<Customer, CustomerRepository>() {
         return customerRepository
     }
 
-    @GetMapping("/customers/{id}")
-    fun get(@PathVariable id: String, @PathVariable businessID: String): ResponseEntity<ResponseModel<Customer?>> {
-        val customerResponse = super.get(id)
-        if(customerResponse.body?.data?.business?.id != businessID) {
-            return ResponseModel<Customer?>(data=null, message="This is not a customer of this business: $businessID").build(HttpStatus.FORBIDDEN)
+    @GetMapping("/customers/{businessId}/{customerId}")
+    fun get(@PathVariable customerId: Long, @PathVariable businessId: Long): ResponseEntity<ResponseModel<Customer?>> {
+        val customerResponse = super.get(customerId)
+        if(customerResponse.body?.data?.businessId != businessId) {
+            return ResponseModel<Customer?>(data=null, message="This is not a customer of this business: $businessId").build(HttpStatus.FORBIDDEN)
         }
         return customerResponse
     }
 
-    @PostMapping("/customers")
-    fun post(@RequestBody data: Customer, @RequestParam(required = true) businessID: String): ResponseEntity<ResponseModel<Customer?>> {
-        val business = businessRepository.findById(businessID)
+    @PostMapping("/customers/{businessId}")
+    fun post(@PathVariable businessId: Long, @RequestBody data: Customer): ResponseEntity<ResponseModel<Customer?>> {
+        val business = businessRepository.findById(businessId)
         if (business.isEmpty) {
-            return ResponseModel<Customer?>(data=null, message="Invalid Business ID: $businessID").build(HttpStatus.FORBIDDEN)
+            return ResponseModel<Customer?>(data=null, message="Invalid Business ID: $businessId").build(HttpStatus.FORBIDDEN)
         }
-        val copied = data.copy(business = business.get())
+        val copied = data.copy(businessId = business.get().id)
         return super.post(copied)
     }
 
-    @PutMapping("/customers/{id}")
-    override fun put(@PathVariable id: String, @RequestBody data: Customer): ResponseEntity<ResponseModel<Customer?>> {
-        return super.put(id, data)
+    @PutMapping("/customers/{customerId}")
+    fun put(@RequestBody data: Customer, @PathVariable customerId: Long): ResponseEntity<ResponseModel<Customer?>> {
+        return super.put(customerId, data)
     }
 
 }

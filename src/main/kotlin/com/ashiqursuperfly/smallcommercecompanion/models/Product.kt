@@ -5,7 +5,7 @@ import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection = Const.MongoCollections.PRODUCTS)
+@Document(collection = Const.Mongo.PRODUCTS)
 data class Product(
     @Field
     val id: String?,

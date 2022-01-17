@@ -1,4 +1,4 @@
-package com.ashiqursuperfly.smallcommercecompanion.controllers
+package com.ashiqursuperfly.smallcommercecompanion.base
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

@@ -2,26 +2,19 @@ package com.ashiqursuperfly.smallcommercecompanion.models
 
 import com.ashiqursuperfly.smallcommercecompanion.base.SimpleBaseModel
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
-import org.springframework.data.mongodb.core.mapping.Field
 
-@Document(collection = Const.MongoCollections.CUSTOMERS)
+@Document(collection = Const.Mongo.Collections.CUSTOMERS)
 data class Customer(
     @Id
-    val id: String, // TODO: Auto Increment
-    @Field
+    var id: Long,
     var name: String?,
-    @Field
+
     var phoneNumber: String?,
-    @Field
     var email: String?,
-    @Field
     var facebookProfileLink: String?,
-    @Field
     var instagramProfileLink: String?,
-    @DBRef
-    var business: Business?
+    var businessId: Long?
 ) : SimpleBaseModel<Customer> {
 
     override fun update(data: Customer): Customer {
