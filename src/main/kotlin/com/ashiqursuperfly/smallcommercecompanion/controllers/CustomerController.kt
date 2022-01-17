@@ -29,8 +29,18 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         return customerRepository
     }
 
+    @GetMapping("/{id}")
+    fun get(
+        @RequestHeader(required = true) secretAccessKey: String,
+        @PathVariable id: Long
+    ): ResponseEntity<ResponseModel<Customer?>> {
+        val validationFailure = validateHeaderAndPath(secretAccessKey, id)
+        if (validationFailure != null) return validationFailure
+        return super.get(id)
+    }
+
     @GetMapping
-    fun get(@RequestHeader(required = true) secretAccessKey: String): ResponseEntity<ResponseModel<List<Customer>?>> {
+    fun getAll(@RequestHeader(required = true) secretAccessKey: String): ResponseEntity<ResponseModel<List<Customer>?>> {
         val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
             ?: return ResponseModel<List<Customer>?>(
                 data = null,
@@ -42,22 +52,6 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         return ResponseModel<List<Customer>?>(data = customers).build(HttpStatus.OK)
     }
 
-    @GetMapping("/{id}")
-    fun get(
-        @RequestHeader(required = true) secretAccessKey: String,
-        @PathVariable id: Long
-    ): ResponseEntity<ResponseModel<Customer?>> {
-        val customerResponse = super.get(id)
-        val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
-
-        if (customerResponse.body?.data?.businessId != business?.id) {
-            return ResponseModel<Customer?>(
-                data = null,
-                message = "This is not a customer of this business: ${business?.id}"
-            ).build(HttpStatus.FORBIDDEN)
-        }
-        return customerResponse
-    }
 
     @PostMapping
     fun post(
@@ -83,21 +77,8 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         @RequestBody data: Customer,
         @PathVariable id: Long
     ): ResponseEntity<ResponseModel<Customer?>> {
-        // 2 validations necessary
-        // 1. Whether the secretAccessKey actually represents a real business
-        // 2. Whether the customer exists/belongs to this business
-        val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
-            ?: return ResponseModel<Customer?>(
-                data = null,
-                message = "Invalid/Missing business secret access key"
-            ).build(HttpStatus.FORBIDDEN)
-        val customer = super.get(id)
-        if (customer.body?.data?.businessId != business.id) {
-            return ResponseModel<Customer?>(
-                data = null,
-                message = "This is not a customer of this business: ${business.id}"
-            ).build(HttpStatus.FORBIDDEN)
-        }
+        val validationFailure = validateHeaderAndPath(secretAccessKey, id)
+        if (validationFailure != null) return validationFailure
         return super.put(id, data)
     }
 
@@ -106,19 +87,28 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         @RequestHeader(required = true) secretAccessKey: String,
         @PathVariable id: Long
     ): ResponseEntity<ResponseModel<Customer?>> {
+        val validationFailure = validateHeaderAndPath(secretAccessKey, id)
+        if (validationFailure != null) return validationFailure
+        return super.delete(id)
+    }
+
+    fun validateHeaderAndPath(secretAccessKey: String, id: Long): ResponseEntity<ResponseModel<Customer?>>? {
+        // 2 validations necessary
+        // 1. Whether the secretAccessKey actually represents a real business
+        // 2. Whether the customer exists/belongs to this business
         val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
             ?: return ResponseModel<Customer?>(
                 data = null,
                 message = "Invalid/Missing business secret access key"
             ).build(HttpStatus.FORBIDDEN)
-        val customer = super.get(id)
-        if (customer.body?.data?.businessId != business.id) {
+        val customerResponse = super.get(id)
+        if (customerResponse.body?.data?.businessId != business.id) {
             return ResponseModel<Customer?>(
                 data = null,
                 message = "This is not a customer of this business: ${business.id}"
             ).build(HttpStatus.FORBIDDEN)
         }
-        return super.delete(id)
+        return null
     }
 
 }
