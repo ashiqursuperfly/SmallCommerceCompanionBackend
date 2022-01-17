@@ -43,15 +43,4 @@ data class Customer(
         return this
     }
 
-    fun customCopy(): Customer {
-        return Customer(
-            id=id,
-            name=name,
-            phoneNumber=phoneNumber,
-            email=email,
-            facebookProfileLink=facebookProfileLink,
-            instagramProfileLink=instagramProfileLink,
-            business=null
-        )
-    }
 }

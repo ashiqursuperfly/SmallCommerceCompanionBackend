@@ -17,18 +17,17 @@ class BusinessController: SimpleCrudController<Business, BusinessRepository>() {
         return customerRepository
     }
 
-
-    @GetMapping("/businesses/{id}")
+    @GetMapping("/business/{id}")
     override fun get(@PathVariable id: String): ResponseEntity<ResponseModel<Business?>> {
         return super.get(id)
     }
 
-    @PostMapping("/businesses")
+    @PostMapping("/business")
     override fun post(@RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         return super.post(data)
     }
 
-    @PutMapping("/businesses/{id}")
+    @PutMapping("/business/{id}")
     override fun put(@PathVariable id: String, @RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         return super.put(id, data)
     }

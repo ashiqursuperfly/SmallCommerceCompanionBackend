@@ -24,7 +24,7 @@ class CustomerController: SimpleCrudController<Customer, CustomerRepository>() {
     }
 
     @GetMapping("/customers/{id}")
-    fun get(@PathVariable id: String, @RequestParam(required = true) businessID: String): ResponseEntity<ResponseModel<Customer?>> {
+    fun get(@PathVariable id: String, @PathVariable businessID: String): ResponseEntity<ResponseModel<Customer?>> {
         val customerResponse = super.get(id)
         if(customerResponse.body?.data?.business?.id != businessID) {
             return ResponseModel<Customer?>(data=null, message="This is not a customer of this business: $businessID").build(HttpStatus.FORBIDDEN)
@@ -38,8 +38,7 @@ class CustomerController: SimpleCrudController<Customer, CustomerRepository>() {
         if (business.isEmpty) {
             return ResponseModel<Customer?>(data=null, message="Invalid Business ID: $businessID").build(HttpStatus.FORBIDDEN)
         }
-        val copied = data.customCopy()
-        copied.business = business.get()
+        val copied = data.copy(business = business.get())
         return super.post(copied)
     }
 
