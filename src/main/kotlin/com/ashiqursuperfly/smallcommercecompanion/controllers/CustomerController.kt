@@ -83,6 +83,9 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         @RequestBody data: Customer,
         @PathVariable id: Long
     ): ResponseEntity<ResponseModel<Customer?>> {
+        // 2 validations necessary
+        // 1. Whether the secretAccessKey actually represents a real business
+        // 2. Whether the customer exists/belongs to this business
         val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
             ?: return ResponseModel<Customer?>(
                 data = null,
@@ -96,6 +99,26 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
             ).build(HttpStatus.FORBIDDEN)
         }
         return super.put(id, data)
+    }
+
+    @DeleteMapping("/{id}")
+    fun delete(
+        @RequestHeader(required = true) secretAccessKey: String,
+        @PathVariable id: Long
+    ): ResponseEntity<ResponseModel<Customer?>> {
+        val business = businessRepository.findBusinessBySecretAccessKey(secretAccessKey)
+            ?: return ResponseModel<Customer?>(
+                data = null,
+                message = "Invalid/Missing business secret access key"
+            ).build(HttpStatus.FORBIDDEN)
+        val customer = super.get(id)
+        if (customer.body?.data?.businessId != business.id) {
+            return ResponseModel<Customer?>(
+                data = null,
+                message = "This is not a customer of this business: ${business.id}"
+            ).build(HttpStatus.FORBIDDEN)
+        }
+        return super.delete(id)
     }
 
 }

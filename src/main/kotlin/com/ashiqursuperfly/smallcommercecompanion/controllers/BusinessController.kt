@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("api/v1/business")
-class BusinessController: SimpleCrudController<Long, Business, BusinessRepository>() {
+class BusinessController : SimpleCrudController<Long, Business, BusinessRepository>() {
 
     @Autowired
     lateinit var sequenceGenerator: SequenceGeneratorService
@@ -43,36 +43,48 @@ class BusinessController: SimpleCrudController<Long, Business, BusinessRepositor
     @PostMapping
     override fun post(@RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
         val copied = data.copy(
-            id=sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.BUSINESS_SEQUENCE)
+            id = sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.BUSINESS_SEQUENCE)
         )
         copied.secretAccessKey = Utils.generateSHA1(copied.toString())
         return super.post(copied)
     }
 
     @PutMapping("/{id}")
-    fun put(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long, @RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
+    fun put(
+        @RequestHeader(required = true) secretAccessKey: String,
+        @PathVariable id: Long,
+        @RequestBody data: Business
+    ): ResponseEntity<ResponseModel<Business?>> {
         val res = getCrudRepository().findById(id)
         if (res.isPresent) {
             return if (res.get().secretAccessKey == secretAccessKey) {
                 super.post(res.get().update(data))
-            } else ResponseModel<Business?>(data=null, message="Invalid/Missing business secret access key").build(HttpStatus.FORBIDDEN)
+            } else ResponseModel<Business?>(
+                data = null,
+                message = "Invalid/Missing business secret access key"
+            ).build(HttpStatus.FORBIDDEN)
         }
-        return ResponseModel<Business?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
+        return ResponseModel<Business?>(data = null, message = "Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
     }
 
     @DeleteMapping("/{id}")
-    fun delete(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long): ResponseEntity<ResponseModel<Business?>> {
-
-        //TODO: should delete all objects having this business id in customer, product & order collection
-
+    fun delete(
+        @RequestHeader(required = true) secretAccessKey: String,
+        @PathVariable id: Long
+    ): ResponseEntity<ResponseModel<Business?>> {
         val res = getCrudRepository().findById(id)
         if (res.isPresent) {
             return if (res.get().secretAccessKey == secretAccessKey) {
                 getCrudRepository().deleteById(id)
                 customerRepository.deleteAll(customerRepository.findAllCustomersOfThisBusiness(id))
-                ResponseModel<Business?>(data=null, message="Deletion Successful").build(HttpStatus.OK)
-            } else ResponseModel<Business?>(data=null, message="Invalid/Missing business secret access key").build(HttpStatus.FORBIDDEN)
+                productRepository.deleteAll(productRepository.findAllProductsOfThisBusiness(id))
+                //TODO: similarly delete related orders
+                ResponseModel<Business?>(data = null, message = "Deletion Successful").build(HttpStatus.OK)
+            } else ResponseModel<Business?>(
+                data = null,
+                message = "Invalid/Missing business secret access key"
+            ).build(HttpStatus.FORBIDDEN)
         }
-        return ResponseModel<Business?>(data=null, message="Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
+        return ResponseModel<Business?>(data = null, message = "Invalid MODEL ID: $id").build(HttpStatus.FORBIDDEN)
     }
 }
