@@ -10,6 +10,7 @@ import com.ashiqursuperfly.smallcommercecompanion.repositories.ProductRepository
 import com.ashiqursuperfly.smallcommercecompanion.services.SequenceGeneratorService
 import com.ashiqursuperfly.smallcommercecompanion.utils.Utils
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.dao.DuplicateKeyException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -42,12 +43,27 @@ class BusinessController : SimpleCrudController<Long, Business, BusinessReposito
 
     @PostMapping
     override fun post(@RequestBody data: Business): ResponseEntity<ResponseModel<Business?>> {
-        //TODO: check if mandatory fields are set or not (email or phone)
+        if (data.contactInfoInvalid()) {
+            return ResponseModel<Business?>(
+                data = null,
+                message = "Please provide either a valid email or a valid phone number or both"
+            ).build(HttpStatus.BAD_REQUEST)
+        }
+
         val copied = data.copy(
             id = sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.BUSINESS_SEQUENCE)
         )
         copied.secretAccessKey = Utils.generateSHA1(copied.toString())
-        return super.post(copied)
+
+        return try {
+            super.post(copied)
+        } catch (ex: DuplicateKeyException) {
+            ResponseModel<Business?>(
+                data = null,
+                message = "A business \"${data.name}\" already exists. Please choose an unique business name"
+            ).build(HttpStatus.BAD_REQUEST)
+        }
+
     }
 
     @PutMapping("/{id}")

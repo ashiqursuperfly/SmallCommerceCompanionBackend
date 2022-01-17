@@ -49,4 +49,9 @@ data class Business(
         return this
     }
 
+    fun contactInfoInvalid(): Boolean {
+        if (phoneNumber==null && email==null) return true
+        return false
+    }
+
 }
