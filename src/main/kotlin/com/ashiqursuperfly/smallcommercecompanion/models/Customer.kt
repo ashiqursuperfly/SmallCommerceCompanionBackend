@@ -13,7 +13,7 @@ data class Customer(
     var email: String?,
     var facebookProfileLink: String?,
     var instagramProfileLink: String?,
-    var businessId: Long?
+    var businessId: Long
 ) : SimpleBaseModel<Customer> {
 
     override fun update(data: Customer): Customer {

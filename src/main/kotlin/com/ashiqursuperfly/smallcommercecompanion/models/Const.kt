@@ -14,6 +14,7 @@ object Const {
             const val BUSINESS_SEQUENCE = "business_sequence"
             const val CUSTOMER_SEQUENCE = "customer_sequence"
             const val PRODUCT_SEQUENCE = "product_sequence"
+            const val ORDER_SEQUENCE = "order_sequence"
         }
         object Params {
             const val SECRET_ACCESS_KEY = "secretAccessKey"

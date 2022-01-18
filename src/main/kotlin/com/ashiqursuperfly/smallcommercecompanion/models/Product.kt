@@ -7,11 +7,11 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = Const.Mongo.Collections.PRODUCTS)
 data class Product(
     @Id
-    val id: Long?,
+    val id: Long,
     var name: String?,
     var description: String?,
-    var businessId: Long?,
-    var price: Float
+    var price: Float,
+    var businessId: Long
 ) : SimpleBaseModel<Product> {
 
     override fun update(data: Product): Product {
