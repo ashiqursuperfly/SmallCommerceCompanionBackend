@@ -7,6 +7,7 @@ import com.ashiqursuperfly.smallcommercecompanion.models.Order
 import com.ashiqursuperfly.smallcommercecompanion.repositories.BusinessRepository
 import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
 import com.ashiqursuperfly.smallcommercecompanion.repositories.OrderRepository
+import com.ashiqursuperfly.smallcommercecompanion.repositories.ProductRepository
 import com.ashiqursuperfly.smallcommercecompanion.services.SequenceGeneratorService
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -25,6 +26,9 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
 
     @Autowired
     lateinit var customerRepository: CustomerRepository
+
+    @Autowired
+    lateinit var productRepository: ProductRepository
 
     @Autowired
     lateinit var businessRepository: BusinessRepository
@@ -67,8 +71,25 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
                 data = null,
                 message = "Invalid/Missing business secret access key"
             ).build(HttpStatus.FORBIDDEN)
-        // TODO: validate if the entered customer/products are actually owned by this business
+
         val customer = customerRepository.findById(data.customer.id)
+        if (customer.get().businessId != business.id) {
+            return ResponseModel<Order?>(
+                data = null,
+                message = "This is not a customer of this business: ${business.id}"
+            ).build(HttpStatus.FORBIDDEN)
+        }
+        val productsOwned = productRepository.findAllProductsOfThisBusiness(business.id)
+        data.products?.let {
+            it.forEach { product ->
+                if (!productsOwned.contains(product)) {
+                    return ResponseModel<Order?>(
+                        data = null,
+                        message = "This is not a product of this business: ${business.id}"
+                    ).build(HttpStatus.FORBIDDEN)
+                }
+            }
+        }
         val copied = data.copy(
             id = sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.PRODUCT_SEQUENCE),
             businessId = business.id,
