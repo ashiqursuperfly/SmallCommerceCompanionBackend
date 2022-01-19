@@ -20,7 +20,7 @@ abstract class SimpleCrudController<ID : Any, MODEL: SimpleBaseModel<MODEL>, REP
     
     open fun post(data: MODEL): ResponseEntity<ResponseModel<MODEL?>> {
         val saved = getCrudRepository().save(data)
-        return ResponseModel<MODEL?>().build(HttpStatus.OK)
+        return ResponseModel<MODEL?>(saved).build(HttpStatus.OK)
     }
     
     open fun put(id: ID, data: MODEL): ResponseEntity<ResponseModel<MODEL?>> {

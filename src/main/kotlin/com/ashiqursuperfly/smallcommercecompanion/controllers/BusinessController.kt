@@ -6,6 +6,7 @@ import com.ashiqursuperfly.smallcommercecompanion.models.Business
 import com.ashiqursuperfly.smallcommercecompanion.models.Const
 import com.ashiqursuperfly.smallcommercecompanion.repositories.BusinessRepository
 import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
+import com.ashiqursuperfly.smallcommercecompanion.repositories.OrderRepository
 import com.ashiqursuperfly.smallcommercecompanion.repositories.ProductRepository
 import com.ashiqursuperfly.smallcommercecompanion.services.SequenceGeneratorService
 import com.ashiqursuperfly.smallcommercecompanion.utils.Utils
@@ -31,6 +32,9 @@ class BusinessController : SimpleCrudController<Long, Business, BusinessReposito
 
     @Autowired
     lateinit var productRepository: ProductRepository
+
+    @Autowired
+    lateinit var orderRepository: OrderRepository
 
     override fun getCrudRepository(): BusinessRepository {
         return businessRepository
@@ -88,7 +92,8 @@ class BusinessController : SimpleCrudController<Long, Business, BusinessReposito
         getCrudRepository().deleteById(id)
         customerRepository.deleteAll(customerRepository.findAllCustomersOfThisBusiness(id))
         productRepository.deleteAll(productRepository.findAllProductsOfThisBusiness(id))
-        //TODO: similarly delete related orders
+        orderRepository.deleteAll(orderRepository.findAllOrdersOfThisBusiness(id))
+
         return ResponseModel<Business?>(data = null, message = "Deletion Successful").build(HttpStatus.OK)
     }
 

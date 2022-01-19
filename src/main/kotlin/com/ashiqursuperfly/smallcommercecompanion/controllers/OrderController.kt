@@ -5,6 +5,7 @@ import com.ashiqursuperfly.smallcommercecompanion.base.SimpleCrudController
 import com.ashiqursuperfly.smallcommercecompanion.models.Const
 import com.ashiqursuperfly.smallcommercecompanion.models.Order
 import com.ashiqursuperfly.smallcommercecompanion.repositories.BusinessRepository
+import com.ashiqursuperfly.smallcommercecompanion.repositories.CustomerRepository
 import com.ashiqursuperfly.smallcommercecompanion.repositories.OrderRepository
 import com.ashiqursuperfly.smallcommercecompanion.services.SequenceGeneratorService
 import org.springframework.beans.factory.annotation.Autowired
@@ -21,6 +22,9 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
 
     @Autowired
     lateinit var orderRepository: OrderRepository
+
+    @Autowired
+    lateinit var customerRepository: CustomerRepository
 
     @Autowired
     lateinit var businessRepository: BusinessRepository
@@ -63,7 +67,8 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
                 data = null,
                 message = "Invalid/Missing business secret access key"
             ).build(HttpStatus.FORBIDDEN)
-
+        // TODO: validate if the entered customer/products are actually owned by this business
+        val customer = customerRepository.findById(data.customer.id)
         val copied = data.copy(
             id = sequenceGenerator.generateSequence(Const.Mongo.SEQUENCES.PRODUCT_SEQUENCE),
             businessId = business.id,
