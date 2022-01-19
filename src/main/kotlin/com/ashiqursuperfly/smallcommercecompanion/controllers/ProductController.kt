@@ -105,7 +105,7 @@ class ProductController: SimpleCrudController<Long, Product, ProductRepository>(
         if (productResponse.body?.data?.businessId != business.id) {
             return ResponseModel<Product?>(
                 data = null,
-                message = "This is not a product of this business: ${business.id}"
+                message = "Product: $id does not exist for Business: ${business.id}"
             ).build(HttpStatus.FORBIDDEN)
         }
         return null

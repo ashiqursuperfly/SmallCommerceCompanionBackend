@@ -76,7 +76,7 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
         if (customer.get().businessId != business.id) {
             return ResponseModel<Order?>(
                 data = null,
-                message = "This is not a customer of this business: ${business.id}"
+                message = "Customer: ${data.customer.id} does not exist for Business: ${business.id}"
             ).build(HttpStatus.FORBIDDEN)
         }
         val productsOwned = productRepository.findAllProductsOfThisBusiness(business.id)
@@ -85,7 +85,7 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
                 if (!productsOwned.contains(product)) {
                     return ResponseModel<Order?>(
                         data = null,
-                        message = "This is not a product of this business: ${business.id}"
+                        message = "Product: ${product.id} does not exist for Business: ${business.id}"
                     ).build(HttpStatus.FORBIDDEN)
                 }
             }
@@ -132,7 +132,7 @@ class OrderController : SimpleCrudController<Long, Order, OrderRepository>() {
         if (orderResponse.body?.data?.businessId != business.id) {
             return ResponseModel<Order?>(
                 data = null,
-                message = "This is not a order of this business: ${business.id}"
+                message = "Order: $id does not exist for Business: ${business.id}"
             ).build(HttpStatus.FORBIDDEN)
         }
         return null

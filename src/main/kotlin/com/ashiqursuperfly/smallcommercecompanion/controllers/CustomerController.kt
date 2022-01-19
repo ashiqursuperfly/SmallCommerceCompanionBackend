@@ -105,7 +105,7 @@ class CustomerController : SimpleCrudController<Long, Customer, CustomerReposito
         if (customerResponse.body?.data?.businessId != business.id) {
             return ResponseModel<Customer?>(
                 data = null,
-                message = "This is not a customer of this business: ${business.id}"
+                message = "Customer: $id does not exist for Business: ${business.id}"
             ).build(HttpStatus.FORBIDDEN)
         }
         return null
