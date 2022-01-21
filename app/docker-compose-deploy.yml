@@ -5,8 +5,9 @@ services:
   app:
     restart: always
     build:
-      context: .
+      context: heroku/Dockerfile
     ports:
       - "80:8080"
+      - "443:443"
     env_file:
-      - local.env
+      - live.env
