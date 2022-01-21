@@ -1,18 +1,15 @@
 package com.ashiqursuperfly.smallcommercecompanion
 
-import org.springframework.boot.CommandLineRunner
 import org.springframework.boot.SpringApplication
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.context.properties.EnableConfigurationProperties
-import org.springframework.context.ApplicationContext
-import org.springframework.context.annotation.Bean
-import java.util.*
 
 
 @EnableConfigurationProperties
 @SpringBootApplication
 class SmallCommerceCompanionApplication {
-    @Bean
+
+    /*@Bean
     fun commandLineRunner(ctx: ApplicationContext): CommandLineRunner {
         return CommandLineRunner { args: Array<String?>? ->
             println("Let's inspect the beans provided by Spring Boot:")
@@ -22,7 +19,7 @@ class SmallCommerceCompanionApplication {
                 println("BEAN: $beanName")
             }
         }
-    }
+    }*/
 
     companion object {
         @JvmStatic
