@@ -1,0 +1,30 @@
+FROM gradle:7.3-jdk11-alpine AS build
+
+RUN mkdir /app
+WORKDIR app
+
+COPY . .
+
+RUN gradle clean
+RUN gradle bootJar
+
+
+FROM openjdk:11-slim
+
+RUN apt-get update
+RUN apt-get upgrade
+
+#RUN adduser -D -g 'spring' spring
+#RUN chown -R spring:spring /app
+WORKDIR app
+RUN useradd spring
+RUN chown -R spring:spring /app
+RUN chmod -R 755 /app
+
+COPY --from=build app/build/libs/*.jar app.jar
+
+USER spring
+
+# ENTRYPOINT ["tail", "-f", "/dev/null"]
+
+ENTRYPOINT [ "java","-jar","app.jar" ]
