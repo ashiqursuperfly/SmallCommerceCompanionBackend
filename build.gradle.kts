@@ -41,3 +41,6 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+springBoot {
+    buildInfo()
+}
