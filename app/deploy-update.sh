@@ -1,4 +1,5 @@
 ./gradlew clean
 ./gradlew bootJar
 cp build/libs/*.jar ../heroku/heroku-remote/app.jar
-bash ../heroku/heroku-remote/deploy.sh
+cd ../heroku/heroku-remote
+bash deploy.sh
