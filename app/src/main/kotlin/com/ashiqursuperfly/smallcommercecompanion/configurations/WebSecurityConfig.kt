@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest
 class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   @Throws(Exception::class)
   override fun configure(http: HttpSecurity) {
+    http.headers().cacheControl()
+
     http.requiresChannel()
       .requestMatchers(RequestMatcher { r: HttpServletRequest ->
         r.getHeader(
