@@ -11,7 +11,7 @@ class WebSecurityConfig : WebSecurityConfigurerAdapter() {
   @Throws(Exception::class)
   override fun configure(http: HttpSecurity) {
     http.headers().cacheControl()
-
+    http.csrf().disable()
     http.requiresChannel()
       .requestMatchers(RequestMatcher { r: HttpServletRequest ->
         r.getHeader(
