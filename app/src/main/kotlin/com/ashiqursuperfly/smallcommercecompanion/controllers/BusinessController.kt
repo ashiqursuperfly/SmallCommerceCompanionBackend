@@ -41,7 +41,10 @@ class BusinessController : SimpleCrudController<Long, Business, BusinessReposito
     }
 
     @GetMapping("/{id}")
-    override fun get(@PathVariable id: Long): ResponseEntity<ResponseModel<Business?>> {
+    fun get(@RequestHeader(required = true) secretAccessKey: String, @PathVariable id: Long): ResponseEntity<ResponseModel<Business?>> {
+        val validationFailure = validationFailure(secretAccessKey, id)
+        if (validationFailure != null) return validationFailure
+
         return super.get(id)
     }
 
