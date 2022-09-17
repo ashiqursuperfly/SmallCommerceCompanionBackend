@@ -1,4 +1,8 @@
-#### Small Commerce Companion
+## Small Commerce Companion
+An API to manage small commerce needs.
+### API Documentation
+<a href="http://smallcommercecompanionbackend-env.eba-ta37k2ky.us-east-2.elasticbeanstalk.com/swagger-ui/index.html"><img src="https://raw.githubusercontent.com/swagger-api/swagger.io/wordpress/images/assets/SWU-logo-clr.png" width="200"></a>
+
 ```json
 {
   "swagger": "2.0",
